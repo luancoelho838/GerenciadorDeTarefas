@@ -22,27 +22,82 @@ namespace GerenciadorDeTarefas
             }
         }
 
-        public void ListarTarefas()
+        public List<Tarefa> ListarTarefas()
         {
+            List<Tarefa> tarefas = new List<Tarefa>();
+
             using (var conexao = Conexao.ObterConexao())
             {
                 string query = "SELECT * FROM Tarefas";
+
                 using (var comando = new MySql.Data.MySqlClient.MySqlCommand(query, conexao))
                 {
                     using (var leitor = comando.ExecuteReader())
                     {
                         while (leitor.Read())
                         {
-                            int id = leitor.GetInt32("Id");
-                            string titulo = leitor.GetString("Titulo");
-                            string descricao = leitor.GetString("Descricao");
-                            DateTime dataVencimento = leitor.GetDateTime("DataVencimento");
-                            bool concluida = leitor.GetBoolean("Concluida");
-                            Console.WriteLine($"Id: {id}, Titulo: {titulo}, Descricao: {descricao}, Data de Vencimento: {dataVencimento}, Concluida: {concluida}");
+                            Tarefa tarefa = new Tarefa
+                            {
+                                Id = leitor.GetInt32("Id"),
+                                Titulo = leitor.GetString("Titulo"),
+                                Descricao = leitor.IsDBNull(leitor.GetOrdinal("Descricao"))
+                                ? null
+                                : leitor.GetString("Descricao"),
+                                DataVencimento = leitor.GetDateTime("DataVencimento"),
+                                Concluida = leitor.GetBoolean("Concluida")
+                            };
+
+                            tarefas.Add(tarefa);
                         }
                     }
                 }
             }
+
+            return tarefas;
         }
-    }
+
+
+        public void AtualizarTarefa(Tarefa tarefa)
+        {
+            using (var conexao = Conexao.ObterConexao())
+            {
+                string query = "UPDATE Tarefas SET Titulo = @titulo, Descricao = @descricao, DataVencimento = @dataVencimento, Concluida = @concluida WHERE Id = @id";
+                using (var comando = new MySql.Data.MySqlClient.MySqlCommand(query, conexao))
+                {
+                    comando.Parameters.AddWithValue("@titulo", tarefa.Titulo);
+                    comando.Parameters.AddWithValue("@descricao", tarefa.Descricao);
+                    comando.Parameters.AddWithValue("@dataVencimento", tarefa.DataVencimento);
+                    comando.Parameters.AddWithValue("@concluida", tarefa.Concluida);
+                    comando.Parameters.AddWithValue("@id", tarefa.Id);
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        public void ExcluirTarefa(int id)
+        {
+            using (var conexao = Conexao.ObterConexao())
+            {
+                string query = "DELETE FROM Tarefas WHERE Id = @id";
+                using (var comando = new MySql.Data.MySqlClient.MySqlCommand(query, conexao))
+                {
+                    comando.Parameters.AddWithValue("@id", id);
+                    comando.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        }
 }
