@@ -88,16 +88,5 @@ namespace GerenciadorDeTarefas
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
         }
 }
