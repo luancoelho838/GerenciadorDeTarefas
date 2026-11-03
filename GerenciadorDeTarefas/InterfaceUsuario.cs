@@ -72,12 +72,12 @@ namespace GerenciadorDeTarefas
         {
             Console.WriteLine("\nDigite o título da tarefa: ");
             string titulo = Console.ReadLine();
-            Console.WriteLine("Digite a descrição da tarefa: ");
+            Console.WriteLine("\nDigite a descrição da tarefa: ");
             string descricao = Console.ReadLine();
             DateTime dataVencimento;
             while (true)
             {
-                Console.WriteLine("Digite a data de vencimento (dd/MM/yyyy): ");
+                Console.WriteLine("\nDigite a data de vencimento (dd/MM/yyyy): ");
                 string dataVencimentoInput = Console.ReadLine();
                 if (DateTime.TryParseExact(dataVencimentoInput, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataVencimento))
                 {
@@ -85,15 +85,28 @@ namespace GerenciadorDeTarefas
                 }
                 else
                 {
-                    Console.WriteLine("Data inválida. Por favor, insira uma data no formato dd/MM/yyyy.");
+                    Console.WriteLine("\nData inválida. Por favor, insira uma data no formato dd/MM/yyyy.");
                 }
             }
+
+            Console.WriteLine("\nA tarefa está concluída? (s/n): ");
+            string concluidaInput = Console.ReadLine();
+
+
+            while(concluidaInput.ToLower() != "s" && concluidaInput.ToLower() != "n")
+            {
+                Console.WriteLine("\nEntrada inválida. Por favor, digite 's' para sim ou 'n' para não.");
+                concluidaInput = Console.ReadLine();
+            }
+
+            bool concluida = concluidaInput.ToLower() == "s";
+
             return new Tarefa
             {
                 Titulo = titulo,
                 Descricao = descricao,
                 DataVencimento = dataVencimento,
-                Concluida = false
+                Concluida = concluida
             };  
         }
 
@@ -121,7 +134,17 @@ namespace GerenciadorDeTarefas
 
 
 
-
+        public static int ObterIdTarefa()
+        {
+            Console.WriteLine("\nDigite o ID da tarefa: ");
+            bool resultado = int.TryParse(Console.ReadLine(), out int id);
+            while (!resultado || id <= 0)
+            {
+                Console.WriteLine("Por favor, insira um número válido.");
+                resultado = int.TryParse(Console.ReadLine(), out id);
+            }
+            return id;
+        }
 
 
 

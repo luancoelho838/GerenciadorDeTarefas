@@ -9,7 +9,7 @@ namespace GerenciadorDeTarefas
     {
         public static MySqlConnection ObterConexao()
         {
-            string connectionString = "server=localhost;database=GerenciadorDeTarefas;user=root;password=Mamada69@;";
+            string connectionString = "server=localhost;database=GerenciadorDeTarefas;user=root;password=testepgm;";
             MySqlConnection conexao = new MySqlConnection(connectionString);
             conexao.Open();
             return conexao;

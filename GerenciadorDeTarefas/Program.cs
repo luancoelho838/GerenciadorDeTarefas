@@ -25,13 +25,33 @@ while (opcao != 5)
             InterfaceUsuario.ExibirTarefas(tarefas);
             break;
         case 3:
-            // Atualizar tarefa
-            break;
+            int id = InterfaceUsuario.ObterIdTarefa();
+            Tarefa atualizarTarefa = InterfaceUsuario.ObterDadosTarefa();
+            atualizarTarefa.Id = id;
+            bool atualizado = tarefaRepository.AtualizarTarefa(atualizarTarefa);
 
+            if (atualizado)
+            {
+                Console.WriteLine("Tarefa atualizada com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma tarefa foi atualizada. Verifique o ID informado.\n");
+            }
+            break;
         case 4:
-            // Excluir tarefa
-            break;
+            int idExcluir = InterfaceUsuario.ObterIdTarefa();
+            bool excluido = tarefaRepository.ExcluirTarefa(idExcluir);
 
+            if (excluido)
+            {
+                Console.WriteLine("Tarefa excluída com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma tarefa foi excluída. Verifique o ID informado.\n");
+            }
+            break;
         case 5:
             Console.WriteLine("Encerrando o programa...");
             break;

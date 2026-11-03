@@ -57,7 +57,7 @@ namespace GerenciadorDeTarefas
         }
 
 
-        public void AtualizarTarefa(Tarefa tarefa)
+        public bool AtualizarTarefa(Tarefa tarefa)
         {
             using (var conexao = Conexao.ObterConexao())
             {
@@ -69,13 +69,23 @@ namespace GerenciadorDeTarefas
                     comando.Parameters.AddWithValue("@dataVencimento", tarefa.DataVencimento);
                     comando.Parameters.AddWithValue("@concluida", tarefa.Concluida);
                     comando.Parameters.AddWithValue("@id", tarefa.Id);
-                    comando.ExecuteNonQuery();
+                    int linhasAfetadas = comando.ExecuteNonQuery();
+
+                    if(linhasAfetadas > 0)
+                    {
+                        return true; 
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
+
         }
 
 
-        public void ExcluirTarefa(int id)
+        public bool ExcluirTarefa(int id)
         {
             using (var conexao = Conexao.ObterConexao())
             {
@@ -83,7 +93,16 @@ namespace GerenciadorDeTarefas
                 using (var comando = new MySql.Data.MySqlClient.MySqlCommand(query, conexao))
                 {
                     comando.Parameters.AddWithValue("@id", id);
-                    comando.ExecuteNonQuery();
+                    int linhasAfetadas = comando.ExecuteNonQuery();
+
+                    if (linhasAfetadas > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
         }
