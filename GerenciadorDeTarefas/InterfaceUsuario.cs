@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace GerenciadorDeTarefas
 {
@@ -38,30 +37,31 @@ namespace GerenciadorDeTarefas
         {
             ExibirMenu();
 
-            int opcao = ConfirmacaoEntrada();
+            int opcao = ObterNumeroInteiro(1, "\nEscolha uma opção de 1 a 5: ");
 
-            return ConfirmarOpcaoMenu(opcao);
+            return ValidarOpcaoMenu(opcao);
         }
 
 
-        public static int ConfirmacaoEntrada()
+        public static int ObterNumeroInteiro(int minimo, string mensagem)
         {
-            Console.Write("\nEscolha uma opção: ");
+            Console.Write(mensagem);
             bool resultado = int.TryParse(Console.ReadLine(), out int opcao);
-            while (!resultado)
+            while (!resultado || opcao < minimo)
             {
                 Console.WriteLine("Por favor, insira um número válido.");
+                Console.WriteLine(mensagem);
                 resultado = int.TryParse(Console.ReadLine(), out opcao);
             }
             return opcao;
         }
 
-        public static int ConfirmarOpcaoMenu(int opcao)
+        public static int ValidarOpcaoMenu(int opcao)
         {
             while (opcao < 1 || opcao > 5)
             {
                 Console.WriteLine("Opção inválida. Escolha uma opção de 1 a 5.");
-                opcao = ConfirmacaoEntrada();
+                opcao = ObterNumeroInteiro(1, "\nEscolha uma opção de 1 a 5: ");
             }
 
             return opcao;
@@ -70,10 +70,9 @@ namespace GerenciadorDeTarefas
         
         public static Tarefa ObterDadosTarefa()
         {
-            Console.WriteLine("\nDigite o título da tarefa: ");
-            string titulo = Console.ReadLine();
-            Console.WriteLine("\nDigite a descrição da tarefa: ");
-            string descricao = Console.ReadLine();
+            string titulo = ObterTitulo();
+            string descricao = ObterDescricao();
+
             DateTime dataVencimento;
             while (true)
             {
@@ -90,16 +89,16 @@ namespace GerenciadorDeTarefas
             }
 
             Console.WriteLine("\nA tarefa está concluída? (s/n): ");
-            string concluidaInput = Console.ReadLine();
+            string concluidaInput = Console.ReadLine()?.Trim();
 
-
-            while(concluidaInput.ToLower() != "s" && concluidaInput.ToLower() != "n")
+            while (!string.Equals(concluidaInput, "s", StringComparison.OrdinalIgnoreCase) &&
+                   !string.Equals(concluidaInput, "n", StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine("\nEntrada inválida. Por favor, digite 's' para sim ou 'n' para não.");
-                concluidaInput = Console.ReadLine();
+                Console.WriteLine("\nEntrada inválida. Digite 's' ou 'n'.");
+                concluidaInput = Console.ReadLine()?.Trim();
             }
 
-            bool concluida = concluidaInput.ToLower() == "s";
+            bool concluida = string.Equals(concluidaInput, "s", StringComparison.OrdinalIgnoreCase);
 
             return new Tarefa
             {
@@ -136,23 +135,79 @@ namespace GerenciadorDeTarefas
 
         public static int ObterIdTarefa()
         {
-            Console.WriteLine("\nDigite o ID da tarefa: ");
-            bool resultado = int.TryParse(Console.ReadLine(), out int id);
-            while (!resultado || id <= 0)
+            return ObterNumeroInteiro(1, "\nDigite o ID da tarefa: ");
+        }
+
+
+        public static void ExibirResultadoAtualizacao(bool atualizado)
+        {
+            if (atualizado)
             {
-                Console.WriteLine("Por favor, insira um número válido.");
-                resultado = int.TryParse(Console.ReadLine(), out id);
+                Console.WriteLine("Tarefa atualizada com sucesso.");
             }
-            return id;
+            else
+            {
+                Console.WriteLine("Nenhuma tarefa foi atualizada. Verifique o ID informado.\n");
+            }
         }
 
 
 
+        public static void ExibirResultadoExclusao(bool excluido)
+        {
+            if (excluido)
+            {
+                Console.WriteLine("Tarefa excluída com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("Nenhuma tarefa foi excluída. Verifique o ID informado.\n");
+            }
+        }
 
 
 
+        public static void ExibirResultadoCadastro(bool cadastrado)
+        {
+            if (cadastrado)
+            {
+                Console.WriteLine("Tarefa cadastrada com sucesso.");
+            }
+            else
+            {
+                Console.WriteLine("Erro ao cadastrar a tarefa. Tente novamente.\n");
+            }
+        }
 
 
+
+        public static string ObterTitulo()
+        {
+            Console.WriteLine("\nDigite o título da tarefa: ");
+            string titulo = Console.ReadLine();
+            while(string.IsNullOrEmpty(titulo) || titulo.Length > 80)
+            {
+                Console.WriteLine("\nO título deve ter entre 1 e 80 caracteres. Digite novamente: ");
+                titulo = Console.ReadLine();
+            }
+
+            return titulo;
+        }
+
+
+
+        public static string ObterDescricao()
+        {
+            Console.WriteLine("\nDigite a descrição da tarefa: ");
+            string descricao = Console.ReadLine() ?? string.Empty;
+            while (descricao.Length > 200)
+            {
+                Console.WriteLine("\nA descrição deve ter menos de 200 caracteres. Digite novamente: ");
+                descricao = Console.ReadLine();
+            }
+
+            return descricao;
+        }
 
 
 
