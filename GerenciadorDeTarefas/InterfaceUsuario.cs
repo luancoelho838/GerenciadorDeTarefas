@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -207,6 +208,18 @@ namespace GerenciadorDeTarefas
             }
 
             return descricao;
+        }
+
+
+        public static void ExibirErro(string mensagem, Exception ex)
+        {
+            Console.WriteLine($"{mensagem}: {ex.Message}");
+        }
+
+
+        public static void ExibirErroBD(string mensagem, MySqlException ex)
+        {
+            Console.WriteLine($"{mensagem}: {ex.Message}");
         }
 
 

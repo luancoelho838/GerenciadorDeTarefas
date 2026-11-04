@@ -6,7 +6,7 @@ namespace GerenciadorDeTarefas
 {
     internal class TarefaRepository
     {
-        public void AdicionarTarefa(Tarefa tarefa)
+        public bool AdicionarTarefa(Tarefa tarefa)
         {
             using (var conexao = Conexao.ObterConexao())
             {
@@ -14,10 +14,19 @@ namespace GerenciadorDeTarefas
                 using (var comando = new MySql.Data.MySqlClient.MySqlCommand(query, conexao))
                 {
                     comando.Parameters.AddWithValue("@titulo", tarefa.Titulo);
-                    comando.Parameters.AddWithValue("@descricao", tarefa.Descricao);
+                    comando.Parameters.AddWithValue("@descricao", (object?)tarefa.Descricao ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@dataVencimento", tarefa.DataVencimento);
                     comando.Parameters.AddWithValue("@concluida", tarefa.Concluida);
-                    comando.ExecuteNonQuery();
+                    int linhasAfetadas = comando.ExecuteNonQuery();
+
+                    if (linhasAfetadas > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -65,7 +74,7 @@ namespace GerenciadorDeTarefas
                 using (var comando = new MySql.Data.MySqlClient.MySqlCommand(query, conexao))
                 {
                     comando.Parameters.AddWithValue("@titulo", tarefa.Titulo);
-                    comando.Parameters.AddWithValue("@descricao", tarefa.Descricao);
+                    comando.Parameters.AddWithValue("@descricao", (object?)tarefa.Descricao ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@dataVencimento", tarefa.DataVencimento);
                     comando.Parameters.AddWithValue("@concluida", tarefa.Concluida);
                     comando.Parameters.AddWithValue("@id", tarefa.Id);

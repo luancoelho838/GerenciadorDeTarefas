@@ -1,5 +1,5 @@
 ﻿using GerenciadorDeTarefas;
-
+using MySql.Data.MySqlClient;
 
 
 int opcao = 0;
@@ -15,28 +15,72 @@ while (opcao != 5)
     switch (opcao)
     {
         case 1:
-            Tarefa tarefa = InterfaceUsuario.ObterDadosTarefa();
-            bool cadastrado = tarefaRepository.AdicionarTarefa(tarefa);
-            InterfaceUsuario.ExibirResultadoCadastro(cadastrado);
+            try
+            {
+                Tarefa tarefa = InterfaceUsuario.ObterDadosTarefa();
+                bool cadastrado = tarefaRepository.AdicionarTarefa(tarefa);
+                InterfaceUsuario.ExibirResultadoCadastro(cadastrado);
+            }
+            catch (MySqlException ex) 
+            {
+                InterfaceUsuario.ExibirErroBD("Ocorreu um erro durante a operação no banco de dados", ex);
+            }
+            catch (Exception ex)
+            {
+                InterfaceUsuario.ExibirErro("Erro ao cadastrar a tarefa", ex);
+            }
             break;
 
         case 2:
-            List<Tarefa> tarefas = tarefaRepository.ListarTarefas();
-            InterfaceUsuario.ExibirTarefas(tarefas);
+            try
+            {
+                List<Tarefa> tarefas = tarefaRepository.ListarTarefas();
+                InterfaceUsuario.ExibirTarefas(tarefas);
+            }
+            catch (MySqlException ex)
+            {
+                InterfaceUsuario.ExibirErroBD("Ocorreu um erro durante a operação no banco de dados", ex);
+            }
+            catch (Exception ex)
+            {
+                InterfaceUsuario.ExibirErro("Erro ao listar as tarefas", ex);
+            }
             break;
 
         case 3:
-            int id = InterfaceUsuario.ObterIdTarefa();
-            Tarefa atualizarTarefa = InterfaceUsuario.ObterDadosTarefa();
-            atualizarTarefa.Id = id;
-            bool atualizado = tarefaRepository.AtualizarTarefa(atualizarTarefa);
-            InterfaceUsuario.ExibirResultadoAtualizacao(atualizado);
+            try
+            {
+                int id = InterfaceUsuario.ObterIdTarefa();
+                Tarefa atualizarTarefa = InterfaceUsuario.ObterDadosTarefa();
+                atualizarTarefa.Id = id;
+                bool atualizado = tarefaRepository.AtualizarTarefa(atualizarTarefa);
+                InterfaceUsuario.ExibirResultadoAtualizacao(atualizado);
+            }
+            catch (MySqlException ex)
+            {
+                InterfaceUsuario.ExibirErroBD("Ocorreu um erro durante a operação no banco de dados", ex);
+            }
+            catch (Exception ex)
+            {
+                InterfaceUsuario.ExibirErro("Erro ao atualizar a tarefa", ex);
+            }
             break;
 
         case 4:
-            int idExcluir = InterfaceUsuario.ObterIdTarefa();
-            bool excluido = tarefaRepository.ExcluirTarefa(idExcluir);
-            InterfaceUsuario.ExibirResultadoExclusao(excluido);
+            try
+            {
+                int idExcluir = InterfaceUsuario.ObterIdTarefa();
+                bool excluido = tarefaRepository.ExcluirTarefa(idExcluir);
+                InterfaceUsuario.ExibirResultadoExclusao(excluido);
+            }
+            catch (MySqlException ex)
+            {
+                InterfaceUsuario.ExibirErroBD("Ocorreu um erro durante a operação no banco de dados", ex);
+            }
+            catch (Exception ex)
+            {
+                InterfaceUsuario.ExibirErro("Erro ao excluir a tarefa", ex);
+            }
             break;
 
         case 5:
