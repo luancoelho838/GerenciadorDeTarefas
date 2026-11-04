@@ -21,7 +21,7 @@ while (opcao != 5)
                 bool cadastrado = tarefaRepository.AdicionarTarefa(tarefa);
                 InterfaceUsuario.ExibirResultadoCadastro(cadastrado);
             }
-            catch (MySqlException ex) 
+            catch (MySqlException ex)
             {
                 InterfaceUsuario.ExibirErroBD("Ocorreu um erro durante a operação no banco de dados", ex);
             }
@@ -51,11 +51,17 @@ while (opcao != 5)
             try
             {
                 int id = InterfaceUsuario.ObterIdTarefa();
-                Tarefa atualizarTarefa = InterfaceUsuario.ObterDadosTarefa();
-                atualizarTarefa.Id = id;
-                bool atualizado = tarefaRepository.AtualizarTarefa(atualizarTarefa);
-                InterfaceUsuario.ExibirResultadoAtualizacao(atualizado);
-            }
+
+                if (!tarefaRepository.ExisteTarefa(id))
+                {
+                    Console.WriteLine($"Tarefa com ID {id} não encontrada.");
+                    break;
+                }
+                    Tarefa atualizarTarefa = InterfaceUsuario.ObterDadosTarefa();
+                    atualizarTarefa.Id = id;
+                    bool atualizado = tarefaRepository.AtualizarTarefa(atualizarTarefa);
+                    InterfaceUsuario.ExibirResultadoAtualizacao(atualizado);
+                }
             catch (MySqlException ex)
             {
                 InterfaceUsuario.ExibirErroBD("Ocorreu um erro durante a operação no banco de dados", ex);
@@ -70,6 +76,12 @@ while (opcao != 5)
             try
             {
                 int idExcluir = InterfaceUsuario.ObterIdTarefa();
+
+                if (!tarefaRepository.ExisteTarefa(idExcluir)){
+                    Console.WriteLine($"Tarefa com ID {idExcluir} não encontrada.");
+                    break;
+                }
+
                 bool excluido = tarefaRepository.ExcluirTarefa(idExcluir);
                 InterfaceUsuario.ExibirResultadoExclusao(excluido);
             }
